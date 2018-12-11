@@ -1,0 +1,57 @@
+## {{ project_name|title }}
+##
+## Lines starting with two hashes (##) are comments with information.
+## Lines starting with one hash (#) are configuration parameters that can be uncommented.
+
+upstream {{ project_name }} {
+  server unix:/home/{{ project_name }}/{{ project_name }}/tmp/sockets/gunicorn.sock fail_timeout=0;
+}
+
+## Normal HTTP host
+server {
+  listen 0.0.0.0:80 default_server;
+  listen [::]:80 ipv6only=on default_server;
+  server_name YOUR_SERVER_FQDN; ## Replace this with something like www.{{ project_name }}.com
+  server_tokens off; ## Don't show the nginx version number, a security best practice
+  root /home/{{ project_name }}/{{ project_name }};
+
+  ## Increase this if you want to upload large attachments
+  client_max_body_size 20m;
+
+  ## Individual nginx logs for this {{ project_name|title }} vhost
+  access_log  /var/log/nginx/{{ project_name }}_access.log;
+  error_log   /var/log/nginx/{{ project_name }}_error.log;
+
+  location / {
+    ## @{{ project_name }} is a named location for the upstream fallback, see below.
+    try_files $uri @{{ project_name }};
+  }
+
+  location @{{ project_name }} {
+    ## If you use HTTPS make sure you disable gzip compression
+    ## to be safe against BREACH attack.
+    # gzip off;
+
+    proxy_set_header    Host                $http_host;
+    proxy_set_header    X-Real-IP           $remote_addr;
+    proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
+    proxy_set_header    X-Forwarded-Proto   $scheme;
+    proxy_set_header    X-Frame-Options     SAMEORIGIN;
+
+    proxy_pass http://{{ project_name }};
+  }
+
+  ## Serve Static Assets directly through Nginx
+
+  location /static/ {
+    root /home/{{ project_name }}/{{ project_name }}/static;
+    gzip_static on; # to serve pre-gzipped version
+    expires max;
+    add_header Cache-Control public;
+  }
+
+  error_page 500 502 503 504 /500.html;
+    location = /500.html {
+      root /home/{{ project_name }}/{{ project_name }}/templates;
+    }
+}

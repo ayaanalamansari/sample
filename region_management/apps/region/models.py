@@ -9,6 +9,12 @@ class Currency(models.Model):
     name = models.CharField(max_length=100)
     symbol = models.CharField(max_length=50)
 
+    def __str__(self):
+        """Return str for object."""
+        return "{name}".format(
+            name=self.name,
+        )
+
 
 class Country(models.Model):
     """
@@ -19,6 +25,13 @@ class Country(models.Model):
     currency = models.ForeignKey(Currency, on_delete=models.DO_NOTHING, null=True)
     phone_code = models.DecimalField(max_digits=5, decimal_places=0)
 
+    def __str__(self):
+        """Return str for object."""
+        return "{name}".format(
+            name=self.name,
+        )
+
+
 class State(models.Model):
     """
     This table stores the master data about states
@@ -26,6 +39,13 @@ class State(models.Model):
     name = models.CharField(max_length=100)
     code = models.CharField(max_length=100, null=True)
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
+
+    def __str__(self):
+        """Return str for object."""
+        return "{name}> {country}".format(
+            name=self.name,
+            country=self.country,
+        )
 
 class City(models.Model):
     """
@@ -37,6 +57,14 @@ class City(models.Model):
     state = models.ForeignKey(State, on_delete=models.CASCADE)
     latitude = models.DecimalField(max_digits=15, decimal_places=10, null=True)
     longitude = models.DecimalField(max_digits=15, decimal_places=10, null=True)
+
+    def __str__(self):
+        """Return str for object."""
+        return "{city_name}> {state}".format(
+            city_name=self.city_name,
+            state=self.state,
+        )
+
 
 class Address(models.Model):
     """
@@ -54,6 +82,13 @@ class Address(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_by = models.IntegerField()
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        """Return str for object."""
+        return "{address_line1}> {city}".format(
+            address_line1=self.address_line1,
+            city=self.city,
+        )
 
 class Timezone(models.Model):
     """

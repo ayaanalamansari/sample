@@ -23,4 +23,4 @@ See Contributing.md
 
 ## License
 
-AAll the rights are reserved to NoVacancy(novacancyreservations.com)
+All the rights are reserved to NoVacancy(novacancyreservations.com)

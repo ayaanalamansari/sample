@@ -26,10 +26,9 @@ INSTALLED_APPS = [
     # modules
     'rest_framework',
     'rest_framework.authtoken',
-    'djcelery',
-    'fcm_django',
-    'django_extensions',
-    'debug_toolbar',
+    # 'django_extensions',
+    # 'debug_toolbar',
+    'corsheaders',
 ]
 
 INSTALLED_APPS += [
@@ -44,6 +43,7 @@ INSTALLED_APPS += [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -52,10 +52,27 @@ MIDDLEWARE = [
 ]
 
 MIDDLEWARE += [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 # INTERNAL_IPS = ['127.0.0.1',]
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+
+    'x-http-method-override',
+    'active',
+)
 
 ROOT_URLCONF = 'config.urls'
 

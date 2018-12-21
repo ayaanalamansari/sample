@@ -66,30 +66,6 @@ class City(models.Model):
         )
 
 
-class Address(models.Model):
-    """
-    This table stores the master data about address of user type entity or company
-    """
-    address_line1 = models.CharField(max_length=150)
-    address_line2 = models.CharField(max_length=150, null=True)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE)
-    state = models.ForeignKey(State, on_delete=models.CASCADE)
-    city = models.ForeignKey(City, on_delete=models.CASCADE)
-    zip_code = models.CharField(max_length=10)
-    latitude = models.DecimalField(max_digits=15, decimal_places=10)
-    longitude = models.DecimalField(max_digits=15, decimal_places=10)
-    created_by = models.IntegerField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_by = models.IntegerField()
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        """Return str for object."""
-        return "{address_line1}> {city}".format(
-            address_line1=self.address_line1,
-            city=self.city,
-        )
-
 class Timezone(models.Model):
     """
     This table stores the master data about timezones

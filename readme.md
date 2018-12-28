@@ -1,9 +1,9 @@
-Region Api
+Region Service
 ==========
 
 ## About
 
-Region management is an independent api service which contains static data
+Region Service is an independent api service which contains static data
 of Countries, States, Cities, Currencies and Timezones.
 
 ## Prerequisites
@@ -16,10 +16,6 @@ of Countries, States, Cities, Currencies and Timezones.
 ## Installation
 
 See Install.md
-
-## Contributing
-
-See Contributing.md
 
 ## License
 

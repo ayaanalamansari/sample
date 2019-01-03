@@ -72,6 +72,7 @@ CORS_ALLOW_HEADERS = (
 
     'x-http-method-override',
     'active',
+    'company-id',
 )
 
 ROOT_URLCONF = 'config.urls'

@@ -29,7 +29,7 @@ class StateTests(APITestCase):
     Test case to check the lits of states
     """
     def test_state_view_list(self):
-        url = reverse('state', kwargs={'pk':1})
+        url = reverse('country-state', kwargs={'pk':1})
         response = self.client.get(url)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
 
@@ -38,7 +38,7 @@ class CityTests(APITestCase):
     Test case to check the lits of cities
     """
     def test_city_view_list(self):
-        url = reverse('city', kwargs={'pk':1})
+        url = reverse('state-city', kwargs={'pk':1})
         response = self.client.get(url)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
 

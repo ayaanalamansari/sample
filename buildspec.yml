@@ -1,0 +1,93 @@
+version: 0.2
+
+env:
+  variables:
+    BUILD: "dev"
+    DEBUG: True
+    ALLOWED_HOSTS: "['*']"
+    DJANGO_SETTINGS_MODULE: config.settings
+    SITE_URL: 'http://www.localhost:8005/'
+    WEBAPP_URL: 'http://www.localhost:8005/'
+    APP_LOGO: ''
+
+    AWS_DEFAULT_REGION: "us-east-2"
+    JWT_SECRET_KEY: ""
+
+    DB_HOST: 'localhost'
+    DB_NAME: ''
+    DB_USER: ''
+    DB_PASS: ''
+    DB_PORT: 5432
+
+    EMAIL_HOST: ""
+    EMAIL_HOST_USER: ""
+    EMAIL_HOST_PASSWORD: ""
+    EMAIL_PORT: 587
+    EMAIL_USE_TLS: True
+
+    BASE_APP_DIR: "region_management"
+    BLOCKING_TIME: 1800
+    INVALID_LOGIN_ATTEMPTS_COUNT: 5
+    CORS_ORIGIN_ALLOW_ALL: True
+
+    CONTAINER_NAME: "name"
+    TEST_OUTPUT_BUCKET: "name"
+
+phases:
+  install:
+    commands:
+      - echo CODEBUILD_SRC_DIR - $CODEBUILD_SRC_DIR
+      - apt-get update
+      - apt-get install -y python3-setuptools
+      - apt-get install -y python3-pip
+      - pip3 install -r requirements.txt
+    finally:
+      - echo This always runs even if the update or install command fails
+
+  pre_build:
+    commands:
+      - echo pre build state...
+      - aws s3 cp --recursive s3://nv-dev-models ${BASE_APP_DIR}/apps/NoVacancy-Backend-Models/
+      - cp config/local.py.example config/local.py
+      - echo Run django test cases....
+      # - pytest --html=report.html
+      # - mkdir test test/assets/
+      # - cp report.html test/
+      # - cp assets/style.css test/assets/
+      # - zip -r test.zip test/
+      # - aws s3 cp test.zip s3://${TEST_OUTPUT_BUCKET}/${CONTAINER_NAME}/
+      - echo Logging in to Amazon ECR...
+      - aws --version
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+      - REPOSITORY_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - echo ecr repo uri - $REPOSITORY_URI
+      - echo commit hash - $COMMIT_HASH
+    finally:
+      - echo pre_build state completed
+
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image... new
+      - docker build --build-arg BUILD=$BUILD --build-arg DEBUG=$DEBUG --build-arg ALLOWED_HOSTS=$ALLOWED_HOSTS --build-arg SITE_URL=$SITE_URL --build-arg WEBAPP_URL=$WEBAPP_URL --build-arg APP_LOGO=$APP_LOGO --build-arg AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION --build-arg JWT_SECRET_KEY=$JWT_SECRET_KEY --build-arg DB_HOST=$DB_HOST --build-arg DB_NAME=$DB_NAME --build-arg DB_USER=$DB_USER --build-arg DB_PASS=$DB_PASS --build-arg EMAIL_HOST=$EMAIL_HOST --build-arg EMAIL_HOST_USER=$EMAIL_HOST_USER --build-arg EMAIL_HOST_PASSWORD=$EMAIL_HOST_PASSWORD --build-arg EMAIL_PORT=$EMAIL_PORT --build-arg EMAIL_USE_TLS=$EMAIL_USE_TLS --build-arg BASE_APP_DIR=$BASE_APP_DIR --build-arg BLOCKING_TIME=$BLOCKING_TIME --build-arg INVALID_LOGIN_ATTEMPTS_COUNT=$INVALID_LOGIN_ATTEMPTS_COUNT --build-arg CORS_ORIGIN_ALLOW_ALL=$CORS_ORIGIN_ALLOW_ALL -t $REPOSITORY_URI:${IMAGE_TAG} .
+      - docker tag $REPOSITORY_URI:${IMAGE_TAG} $REPOSITORY_URI:${IMAGE_TAG}
+    finally:
+      - echo build state completed
+
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker images...
+      - docker push $REPOSITORY_URI:${IMAGE_TAG}
+      - echo Writing image definitions file...
+      - echo `ls`
+      - printf '[{"name":"%s","imageUri":"%s"}]' $CONTAINER_NAME $REPOSITORY_URI:${IMAGE_TAG} > imagedefinitions.json
+    finally:
+      - echo post_build state completed
+
+artifacts:
+  files:
+    - 'imagedefinitions.json'
+  discard-paths: yes
+  # base-directory: '/'

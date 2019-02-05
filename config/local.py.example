@@ -73,8 +73,8 @@ REST_FRAMEWORK = {
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
     'DEFAULT_VERSION': 'v1',
     'ALLOWED_VERSIONS': ('v1', 'v2'),
-    'DEFAULT_PAGINATION_CLASS': 'novacancyapp.pagination.StandardResultsPageNumberPagination',
-    'EXCEPTION_HANDLER': 'novacancyapp.exceptions.custom_exception_handler',
+    #'DEFAULT_PAGINATION_CLASS': 'novacancyapp.pagination.StandardResultsPageNumberPagination',
+    #'EXCEPTION_HANDLER': 'novacancyapp.exceptions.custom_exception_handler',
 }
 
 JWT_AUTH = {

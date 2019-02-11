@@ -4,40 +4,17 @@ env:
   variables:
     BUILD: "dev"
     DEBUG: False
-    ALLOWED_HOSTS: "['*']"
-    DJANGO_SETTINGS_MODULE: config.settings
-    SITE_URL: 'http://www.localhost:8005/'
-    WEBAPP_URL: 'http://www.localhost:8005/'
-    APP_LOGO: ''
 
     AWS_DEFAULT_REGION: "us-east-2"
     JWT_SECRET_KEY: ""
-
-    DB_HOST: 'localhost'
-    DB_NAME: ''
-    DB_USER: ''
-    DB_PASS: ''
-    DB_PORT: 5432
-
-    EMAIL_HOST: ""
-    EMAIL_HOST_USER: ""
-    EMAIL_HOST_PASSWORD: ""
-    EMAIL_PORT: 587
-    EMAIL_USE_TLS: True
+    PROJECT_CONF: "region_conf"
 
     BASE_APP_DIR: "region_management"
-    BLOCKING_TIME: 1800
-    INVALID_LOGIN_ATTEMPTS_COUNT: 5
-    CORS_ORIGIN_ALLOW_ALL: True
 
     CONTAINER_NAME: "name"
+    MODELS_S3_BUCKET: "name"
+    CONF_S3_BUCKET: "name"
     TEST_OUTPUT_BUCKET: "name"
-
-    DEFAULT_FROM_EMAIL: ""
-    SERVER_EMAIL: ""
-    ATOMIC_REQUESTS: ""
-    CELERYD_MAX_TASKS_PER_CHILD: ""
-    CELERY_DEFAULT_QUEUE: ""
 
 phases:
   install:
@@ -54,9 +31,10 @@ phases:
   pre_build:
     commands:
       - echo pre build state...
-      - aws s3 cp --recursive s3://nv-dev-models ${BASE_APP_DIR}/apps/NoVacancy-Backend-Models/
-      - cp config/local.py.example config/local.py
-      - echo Run django test cases....
+      - aws s3 cp --recursive s3://${MODELS_S3_BUCKET} ${BASE_APP_DIR}/apps/NoVacancy-Backend-Models/
+      - aws s3 cp s3://${CONF_S3_BUCKET}/${PROJECT_CONF}.py config/
+      # - cp config/local.py.example config/local.py
+      - echo Run django test cases...
       # - pytest --html=report.html
       # - mkdir test test/assets/
       # - cp report.html test/
@@ -77,7 +55,7 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image... new
-      - docker build --build-arg BUILD=$BUILD --build-arg DEBUG=$DEBUG --build-arg ALLOWED_HOSTS=$ALLOWED_HOSTS --build-arg SITE_URL=$SITE_URL --build-arg WEBAPP_URL=$WEBAPP_URL --build-arg APP_LOGO=$APP_LOGO --build-arg BLOCKING_TIME=$BLOCKING_TIME --build-arg INVALID_LOGIN_ATTEMPTS_COUNT=$INVALID_LOGIN_ATTEMPTS_COUNT --build-arg BASE_APP_DIR=$BASE_APP_DIR --build-arg DEFAULT_FROM_EMAIL=$DEFAULT_FROM_EMAIL --build-arg SERVER_EMAIL=$SERVER_EMAIL --build-arg ATOMIC_REQUESTS=$ATOMIC_REQUESTS --build-arg AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION --build-arg JWT_SECRET_KEY=$JWT_SECRET_KEY --build-arg DB_HOST=$DB_HOST --build-arg DB_NAME=$DB_NAME --build-arg DB_USER=$DB_USER --build-arg DB_PASS=$DB_PASS --build-arg EMAIL_HOST=$EMAIL_HOST --build-arg EMAIL_HOST_USER=$EMAIL_HOST_USER --build-arg EMAIL_HOST_PASSWORD=$EMAIL_HOST_PASSWORD --build-arg EMAIL_PORT=$EMAIL_PORT --build-arg EMAIL_USE_TLS=$EMAIL_USE_TLS --build-arg CORS_ORIGIN_ALLOW_ALL=$CORS_ORIGIN_ALLOW_ALL  --build-arg CELERYD_MAX_TASKS_PER_CHILD=$CELERYD_MAX_TASKS_PER_CHILD --build-arg CELERY_DEFAULT_QUEUE=$CELERY_DEFAULT_QUEUE -t $REPOSITORY_URI:${IMAGE_TAG} .
+      - docker build --build-arg BUILD=$BUILD --build-arg DEBUG=$DEBUG --build-arg AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION --build-arg JWT_SECRET_KEY=$JWT_SECRET_KEY -t $REPOSITORY_URI:${IMAGE_TAG} .
       - docker tag $REPOSITORY_URI:${IMAGE_TAG} $REPOSITORY_URI:${IMAGE_TAG}
     finally:
       - echo build state completed

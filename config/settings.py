@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 
-from config.local import *
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'u*mvv8s^0&bu8#fact-k#g7rh-rz5!izrtbrlinii-o!+n$jjp'
 
 # Application definition
 
@@ -22,13 +23,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    # modules
+    'django_extensions',
+    'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
-    # 'django_extensions',
-    # 'debug_toolbar',
-    'corsheaders',
 ]
 
 INSTALLED_APPS += [
@@ -38,8 +36,6 @@ INSTALLED_APPS += [
     # 'region_management.libs.currencies',
 ]
 
-# AUTH_USER_MODEL = "accounts.User"
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -48,68 +44,15 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'corsheaders.middleware.CorsPostCsrfMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-MIDDLEWARE += [
-    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
-]
-
-# INTERNAL_IPS = ['127.0.0.1',]
-
-CORS_ORIGIN_ALLOW_ALL = True
-
-CORS_ALLOW_HEADERS = (
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-
-    'x-http-method-override',
-    'active',
-    'company-id',
-)
-
 ROOT_URLCONF = 'config.urls'
 
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
+#AUTH_USER_MODEL = "novacancyapp.GlobalUser"
 
 WSGI_APPLICATION = 'config.wsgi.application'
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/2.0/topics/i18n/
-
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -127,20 +70,23 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
-    # {
-    #     'NAME': 'region_management.validators.MinMaxPasswordValidator',
-    #     'OPTIONS': {
-    #         'min_length': 6,
-    #         'max_length': 128, # Don't edit it as password is saved in hashed format which required larger space to save.
-    #     }
-    # },
-    # {
-    #     'NAME': 'region_management.validators.CasePasswordValidator',
-    # },
-    # {
-    #     'NAME': 'region_management.validators.NumberPasswordValidator',
-    # },
-    # {
-    #     'NAME': 'region_management.validators.SpecialCharacterPasswordValidator',
-    # },
 ]
+
+# Internationalization
+# https://docs.djangoproject.com/en/2.0/topics/i18n/
+
+LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'UTC'
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = True
+
+try:
+    from config.region_conf import *
+except Exception as e:
+    print (e)
+    pass

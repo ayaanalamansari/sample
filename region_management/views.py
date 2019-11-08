@@ -16,15 +16,15 @@ def api_root(request, format=None):
         return Response({"project": "region_management"})
 
     return Response(OrderedDict([
-        ('Currency', OrderedDict([
-            ('currencies', reverse('currencies', request=request, format=format)),
-        ])),
-        ('Regions', OrderedDict([
-            ('countries', reverse('countries', request=request, format=format)),
-            ('country-states', reverse('country-state', request=request, format=format, args=[1])),
-            ('state-cities', reverse('state-city', request=request, format=format, args=[1])),
-        ])),
-        ('Timezone', OrderedDict([
-            ('timezones', reverse('timezones', request=request, format=format)),
-        ])),
+        # ('Currency', OrderedDict([
+        #     ('currencies', reverse('currencies', request=request, format=format)),
+        # ])),
+        # ('Regions', OrderedDict([
+        #     ('countries', reverse('countries', request=request, format=format)),
+        #     ('country-states', reverse('country-state', request=request, format=format, args=[1])),
+        #     ('state-cities', reverse('state-city', request=request, format=format, args=[1])),
+        # ])),
+        # ('Timezone', OrderedDict([
+        #     ('timezones', reverse('timezones', request=request, format=format)),
+        # ])),
     ]))

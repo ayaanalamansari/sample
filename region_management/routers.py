@@ -5,5 +5,4 @@ from django.urls import path
 
 urlpatterns = [
     path('', api_root, name='api_root'),
-    path('', include('region_management.apps.region.routers'))
 ]

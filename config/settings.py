@@ -30,10 +30,7 @@ INSTALLED_APPS = [
 ]
 
 INSTALLED_APPS += [
-    'region_management.apps.region'
-    # 'region_management.libs.accounts',
-    # 'region_management.libs.regions',
-    # 'region_management.libs.currencies',
+    # 'region_management.apps.region'
 ]
 
 MIDDLEWARE = [

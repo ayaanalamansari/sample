@@ -19,4 +19,4 @@ See Install.md
 
 ## License
 
-All the rights are reserved to NoVacancy(novacancyreservations.com)
+All the rights are reserved to

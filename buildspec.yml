@@ -31,8 +31,8 @@ phases:
   pre_build:
     commands:
       - echo pre build state...
-      - aws s3 cp --recursive s3://${MODELS_S3_BUCKET} ${BASE_APP_DIR}/apps/NoVacancy-Backend-Models/
-      - aws s3 cp s3://${CONF_S3_BUCKET}/${PROJECT_CONF}.py config/
+      # - aws s3 cp --recursive s3://${MODELS_S3_BUCKET} ${BASE_APP_DIR}/apps/NoVacancy-Backend-Models/
+      # - aws s3 cp s3://${CONF_S3_BUCKET}/${PROJECT_CONF}.py config/
       # - cp config/local.py.example config/local.py
       - echo Run django test cases...
       # - pytest --html=report.html

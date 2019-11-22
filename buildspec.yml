@@ -18,6 +18,8 @@ env:
 
 phases:
   install:
+    runtime-versions:
+      python: 3.7
     commands:
       - echo CODEBUILD_SRC_DIR - $CODEBUILD_SRC_DIR
       - apt-get update

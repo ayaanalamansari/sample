@@ -57,6 +57,9 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image... new
+      - echo $BUILD
+      - echo $REPOSITORY_URI
+      - echo ${IMAGE_TAG}
       - docker build --build-arg BUILD=$BUILD --build-arg DEBUG=$DEBUG --build-arg AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION --build-arg JWT_SECRET_KEY=$JWT_SECRET_KEY -t $REPOSITORY_URI:${IMAGE_TAG} .
       - docker tag $REPOSITORY_URI:${IMAGE_TAG} $REPOSITORY_URI:${IMAGE_TAG}
     finally:
